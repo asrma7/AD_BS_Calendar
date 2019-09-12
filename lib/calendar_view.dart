@@ -1,7 +1,7 @@
 import './calendar_utils.dart';
 import './ad_bs_switch.dart';
 import './custom_icon_button.dart';
-import 'package:date_utils/date_utils.dart';
+import './date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nepali_utils/nepali_utils.dart';
