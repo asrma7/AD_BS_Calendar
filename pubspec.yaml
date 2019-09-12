@@ -1,0 +1,23 @@
+name: ad_bs_calendar
+description: A Plugin to build calendar widget that supports the date format in both AD and BS.
+version: 0.0.2
+author: Ashutosh Sharma <asrma.sharma@gmail.com>
+homepage: https://github.com/asrma7/AD_BS_Calendar
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  date_utils: ^0.1.0+2
+  intl: ^0.15.7
+  simple_gesture_detector: ^0.1.3
+  nepali_utils: ^2.0.0+2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
