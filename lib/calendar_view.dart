@@ -1,4 +1,5 @@
 import './calendar_utils.dart';
+import './ad_bs_switch.dart';
 import './custom_icon_button.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,11 +15,13 @@ class ADBSCalendar extends StatefulWidget {
   final List<DateTime> events, holidays;
   final OnPreviousMonth onPreviousMonth;
   final OnNextMonth onNextMonth;
+  final bool enableFormatSwitcher;
   final Format format;
   ADBSCalendar({
     this.events = const [],
     this.holidays = const [],
     this.format = Format.AD,
+    this.enableFormatSwitcher = true,
     this.onPreviousMonth,
     this.onNextMonth,
   });
@@ -27,6 +30,7 @@ class ADBSCalendar extends StatefulWidget {
 }
 
 class _ADBSCalendarState extends State<ADBSCalendar> {
+  Format format;
   List<DateTime> _visibleDays;
   static DateTime _focusedDate = DateTime.now();
   NepaliDateTime nt = NepaliDateTime.fromDateTime(_focusedDate);
@@ -129,7 +133,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
 
   Widget _buildTableCell(date) {
     NepaliDateTime nepalidate = NepaliDateTime.fromDateTime(date);
-    bool condition = widget.format == Format.BS
+    bool condition = format == Format.BS
         ? (nepalidate.month < nt.month || nepalidate.month > nt.month)
         : (date.month < _focusedDate.month || date.month > _focusedDate.month);
     if (condition)
@@ -153,7 +157,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
             children: <Widget>[
               Center(
                 child: Text(
-                  widget.format == Format.BS
+                  format == Format.BS
                       ? NepaliDateFormat('d').format(nepalidate)
                       : DateFormat('d').format(date),
                   style: TextStyle(
@@ -182,11 +186,17 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
   }
 
   @override
+  void initState() {
+    format = widget.format;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     NepaliDateTime first = NepaliDateTime(nt.year, nt.month, 1);
     NepaliDateTime last =
         NepaliDateTime(nt.year, nt.month, nepaliMonthDays[nt.year][nt.month]);
-    _visibleDays = widget.format == Format.AD
+    _visibleDays = format == Format.AD
         ? _daysInMonth(_focusedDate)
         : _nepaliDaysInMonth(first.toDateTime(), last.toDateTime());
     return Container(
@@ -201,17 +211,27 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                   icon: Icon(Icons.chevron_left),
                   onTap: _previousMonth,
                 ),
-                Expanded(
-                  child: Text(
-                    widget.format == Format.AD
-                        ? DateFormat.yMMMM('en_US').format(_focusedDate)
-                        : indexToMonth(nt.month, Language.ENGLISH) +
-                            " " +
-                            nt.year.toString(),
-                    style: TextStyle(fontSize: 17.0),
-                    textAlign: TextAlign.start,
-                  ),
+                Text(
+                  format == Format.AD
+                      ? DateFormat.yMMMM('en_US').format(_focusedDate)
+                      : indexToMonth(nt.month, Language.ENGLISH) +
+                          " " +
+                          nt.year.toString(),
+                  style: TextStyle(fontSize: 17.0),
+                  textAlign: TextAlign.start,
                 ),
+                widget.enableFormatSwitcher?Expanded(
+                  child: Center(
+                    child: ADBSSwitch(
+                      format: format,
+                      onChange: (f) {
+                        setState(() {
+                          format = f;
+                        });
+                      },
+                    ),
+                  ),
+                ):Spacer(),
                 CustomIconButton(
                   padding: EdgeInsets.all(5.0),
                   margin: EdgeInsets.all(5.0),
@@ -251,15 +271,17 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
 
   void _previousMonth() {
     setState(() {
-      if (widget.format == Format.AD) {
+      if (format == Format.AD) {
         int year =
             _focusedDate.month == 1 ? _focusedDate.year - 1 : _focusedDate.year;
         int month = _focusedDate.month == 1 ? 12 : _focusedDate.month - 1;
         _focusedDate = DateTime(year, month, _focusedDate.day);
+        nt = NepaliDateTime.fromDateTime(_focusedDate);
       } else {
         int year = nt.month == 1 ? nt.year - 1 : nt.year;
         int month = nt.month == 1 ? 12 : nt.month - 1;
         nt = NepaliDateTime(year, month, nt.day);
+        _focusedDate = nt.toDateTime();
       }
       _pageId--;
       _dx = -1.2;
@@ -269,16 +291,18 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
 
   void _nextMonth() {
     setState(() {
-      if (widget.format == Format.AD) {
+      if (format == Format.AD) {
         int year = _focusedDate.month == 12
             ? _focusedDate.year + 1
             : _focusedDate.year;
         int month = _focusedDate.month == 12 ? 1 : _focusedDate.month + 1;
         _focusedDate = DateTime(year, month, _focusedDate.day);
+        nt = NepaliDateTime.fromDateTime(_focusedDate);
       } else {
         int year = nt.month == 12 ? nt.year + 1 : nt.year;
         int month = nt.month == 12 ? 1 : nt.month + 1;
         nt = NepaliDateTime(year, month, nt.day);
+        _focusedDate = nt.toDateTime();
       }
       _pageId++;
       _dx = 1.2;
