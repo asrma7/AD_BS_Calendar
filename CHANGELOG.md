@@ -1,4 +1,4 @@
-## [1.0.0] - September 2019
+## [1.0.1] - September 2019
 
 - Fixed version issue with intl
 - Added feature to select dates
