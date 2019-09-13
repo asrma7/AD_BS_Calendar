@@ -27,5 +27,8 @@ ADBSCalendar(
     onNextMonth: () {
         print("Next");
     },
+    onSelectedDateChange: (date) {
+        print(date.toString());
+    },
 ),
 ```
