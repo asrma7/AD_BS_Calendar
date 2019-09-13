@@ -30,11 +30,14 @@ class _AppState extends State<App> {
             DateTime.parse('2019-09-01'),
           ],
           format: format,
-          onPreviousMonth: () {
-            print("Previous");
+          onPreviousMonth: (month) {
+            print(month);
           },
-          onNextMonth: () {
-            print("Next");
+          onNextMonth: (month) {
+            print(month);
+          },
+          onSelectedDateChange: (date) {
+            print(date.toString());
           },
         ),
       ),

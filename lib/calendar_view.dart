@@ -8,13 +8,15 @@ import 'package:nepali_utils/nepali_utils.dart';
 
 import 'format.dart';
 
-typedef OnPreviousMonth();
-typedef OnNextMonth();
+typedef OnPreviousMonth(month);
+typedef OnNextMonth(month);
+typedef OnSelectedDateChange(date);
 
 class ADBSCalendar extends StatefulWidget {
   final List<DateTime> events, holidays;
   final OnPreviousMonth onPreviousMonth;
   final OnNextMonth onNextMonth;
+  final OnSelectedDateChange onSelectedDateChange;
   final bool enableFormatSwitcher;
   final Format format;
   ADBSCalendar({
@@ -22,6 +24,7 @@ class ADBSCalendar extends StatefulWidget {
     this.holidays = const [],
     this.format = Format.AD,
     this.enableFormatSwitcher = true,
+    this.onSelectedDateChange,
     this.onPreviousMonth,
     this.onNextMonth,
   });
@@ -32,8 +35,9 @@ class ADBSCalendar extends StatefulWidget {
 class _ADBSCalendarState extends State<ADBSCalendar> {
   Format format;
   List<DateTime> _visibleDays;
-  static DateTime _focusedDate = DateTime.now();
-  NepaliDateTime nt = NepaliDateTime.fromDateTime(_focusedDate);
+  DateTime _focusedDate = DateTime.now();
+  NepaliDateTime nt = NepaliDateTime.fromDateTime(DateTime.now());
+  DateTime _selectedDate = DateTime.now();
   int _pageId = 0;
   double _dx = 0;
   Widget _buildtable() {
@@ -139,49 +143,59 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
     if (condition)
       return Container();
     else
-      return Center(
-        child: Container(
-          height: 30.0,
-          width: 30.0,
-          margin: EdgeInsets.symmetric(vertical: 5.0),
-          decoration: (date.year == DateTime.now().year &&
-                  date.month == DateTime.now().month &&
-                  date.day == DateTime.now().day)
-              ? BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.circular(50.0),
-                )
-              : BoxDecoration(),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Center(
-                child: Text(
-                  format == Format.BS
-                      ? NepaliDateFormat('d').format(nepalidate)
-                      : DateFormat('d').format(date),
-                  style: TextStyle(
-                      color: (date.year == DateTime.now().year &&
-                              date.month == DateTime.now().month &&
-                              date.day == DateTime.now().day)
-                          ? Colors.white
-                          : DateFormat('E').format(date) == "Sat" ||
-                                  widget.holidays.contains(date)
-                              ? const Color(0xFFF44336)
-                              : const Color(0xFF616161)),
+      return GestureDetector(
+        child: Center(
+          child: Container(
+            height: 30.0,
+            width: 30.0,
+            margin: EdgeInsets.symmetric(vertical: 5.0),
+            decoration: (Utils.isSameDay(date, _selectedDate))
+                ? BoxDecoration(
+                    color: Colors.deepPurple,
+                    borderRadius: BorderRadius.circular(50.0),
+                  )
+                : (Utils.isSameDay(date, DateTime.now()))
+                    ? BoxDecoration(
+                        color: Color(0xFFB39DDB),
+                        borderRadius: BorderRadius.circular(50.0),
+                      )
+                    : BoxDecoration(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Center(
+                  child: Text(
+                    format == Format.BS
+                        ? NepaliDateFormat('d').format(nepalidate)
+                        : DateFormat('d').format(date),
+                    style: TextStyle(
+                        color: DateFormat('E').format(date) == "Sat" ||
+                                widget.holidays.contains(date)
+                            ? const Color(0xFFF44336)
+                            : (Utils.isSameDay(date, _selectedDate) ||
+                                    Utils.isSameDay(date, DateTime.now()))
+                                ? Colors.white
+                                : const Color(0xFF616161)),
+                  ),
                 ),
-              ),
-              Container(
-                height: 3.0,
-                width: 10.0,
-                margin: EdgeInsets.only(top: 3.0),
-                color: widget.events.contains(date)
-                    ? Colors.deepOrange
-                    : Colors.transparent,
-              )
-            ],
+                Container(
+                  height: 3.0,
+                  width: 10.0,
+                  margin: EdgeInsets.only(top: 3.0),
+                  color: widget.events.contains(date)
+                      ? Colors.deepOrange
+                      : Colors.transparent,
+                )
+              ],
+            ),
           ),
         ),
+        onTap: () {
+          setState(() {
+            _selectedDate = date;
+          });
+          widget.onSelectedDateChange(date);
+        },
       );
   }
 
@@ -220,18 +234,20 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                   style: TextStyle(fontSize: 17.0),
                   textAlign: TextAlign.start,
                 ),
-                widget.enableFormatSwitcher?Expanded(
-                  child: Center(
-                    child: ADBSSwitch(
-                      format: format,
-                      onChange: (f) {
-                        setState(() {
-                          format = f;
-                        });
-                      },
-                    ),
-                  ),
-                ):Spacer(),
+                widget.enableFormatSwitcher
+                    ? Expanded(
+                        child: Center(
+                          child: ADBSSwitch(
+                            format: format,
+                            onChange: (f) {
+                              setState(() {
+                                format = f;
+                              });
+                            },
+                          ),
+                        ),
+                      )
+                    : Spacer(),
                 CustomIconButton(
                   padding: EdgeInsets.all(5.0),
                   margin: EdgeInsets.all(5.0),
@@ -285,7 +301,8 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       }
       _pageId--;
       _dx = -1.2;
-      widget.onPreviousMonth();
+      int month = format == Format.AD ? _focusedDate.month : nt.month;
+      widget.onPreviousMonth(month);
     });
   }
 
@@ -306,7 +323,8 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       }
       _pageId++;
       _dx = 1.2;
-      widget.onNextMonth();
+      int month = format == Format.AD ? _focusedDate.month : nt.month;
+      widget.onNextMonth(month);
     });
   }
 }
