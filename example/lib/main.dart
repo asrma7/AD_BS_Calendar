@@ -3,13 +3,7 @@ import 'package:flutter/material.dart';
 
 void main() => runApp(App());
 
-class App extends StatefulWidget {
-  @override
-  _AppState createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  Format format = Format.AD;
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,16 +23,7 @@ class _AppState extends State<App> {
             DateTime.parse('2019-09-27'),
             DateTime.parse('2019-09-01'),
           ],
-          format: format,
-          onPreviousMonth: (month) {
-            print(month);
-          },
-          onNextMonth: (month) {
-            print(month);
-          },
-          onSelectedDateChange: (date) {
-            print(date.toString());
-          },
+          format: Format.AD,
         ),
       ),
     );
