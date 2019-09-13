@@ -160,8 +160,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                         borderRadius: BorderRadius.circular(50.0),
                       )
                     : BoxDecoration(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
               children: <Widget>[
                 Center(
                   child: Text(
@@ -178,13 +177,16 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                                 : const Color(0xFF616161)),
                   ),
                 ),
-                Container(
-                  height: 3.0,
-                  width: 10.0,
-                  margin: EdgeInsets.only(top: 3.0),
-                  color: widget.events.contains(date)
-                      ? Colors.deepOrange
-                      : Colors.transparent,
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    height: 3.0,
+                    width: 10.0,
+                    margin: EdgeInsets.only(bottom: 3.0),
+                    color: widget.events.contains(date)
+                        ? Colors.deepOrange
+                        : Colors.transparent,
+                  ),
                 )
               ],
             ),

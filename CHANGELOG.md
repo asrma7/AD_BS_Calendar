@@ -1,6 +1,6 @@
 ## [1.0.0] - September 2019
 
-- Included format type
-- Added support for AD BS Switch within the calendar
-- Fixed the issue of month not showing current month on format change
-- Support of intl 0.16.0
+- Fixed version issue with intl
+- Added feature to select dates
+- Added functionality for onSelectedDateChange
+- Fixed the position of days in calendar table
