@@ -8,8 +8,8 @@ import 'package:nepali_utils/nepali_utils.dart';
 
 import 'format.dart';
 
-typedef OnPreviousMonth(month);
-typedef OnNextMonth(month);
+typedef OnPreviousMonth(month, format);
+typedef OnNextMonth(month, format);
 typedef OnSelectedDateChange(date);
 
 class ADBSCalendar extends StatefulWidget {
@@ -306,7 +306,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       _dx = -1.2;
       int month = format == Format.AD ? _focusedDate.month : nt.month;
       if (widget.onPreviousMonth != null) {
-        widget.onPreviousMonth(month);
+        widget.onPreviousMonth(month, format);
       }
     });
   }
@@ -330,7 +330,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       _dx = 1.2;
       int month = format == Format.AD ? _focusedDate.month : nt.month;
       if (widget.onNextMonth != null) {
-        widget.onNextMonth(month);
+        widget.onNextMonth(month, format);
       }
     });
   }

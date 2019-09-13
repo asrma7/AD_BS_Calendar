@@ -21,11 +21,11 @@ ADBSCalendar(
     ],
     format: format,
     enableFormatSwitcher: true,
-    onPreviousMonth: () {
-        print("Previous");
+    onPreviousMonth: (month, format) {
+        print("$month");
     },
-    onNextMonth: () {
-        print("Next");
+    onNextMonth: (month, format) {
+        print("$month");
     },
     onSelectedDateChange: (date) {
         print(date.toString());
