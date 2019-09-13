@@ -196,7 +196,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
           setState(() {
             _selectedDate = date;
           });
-          widget.onSelectedDateChange(date);
+          widget.onSelectedDateChange ?? widget.onSelectedDateChange(date);
         },
       );
   }
@@ -304,7 +304,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       _pageId--;
       _dx = -1.2;
       int month = format == Format.AD ? _focusedDate.month : nt.month;
-      widget.onPreviousMonth(month);
+      widget.onPreviousMonth ?? widget.onPreviousMonth(month);
     });
   }
 
@@ -326,7 +326,7 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
       _pageId++;
       _dx = 1.2;
       int month = format == Format.AD ? _focusedDate.month : nt.month;
-      widget.onNextMonth(month);
+      widget.onNextMonth ?? widget.onNextMonth(month);
     });
   }
 }
