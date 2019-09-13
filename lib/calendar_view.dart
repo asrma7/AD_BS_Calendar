@@ -10,12 +10,14 @@ import 'format.dart';
 
 typedef OnPreviousMonth(month, format);
 typedef OnNextMonth(month, format);
+typedef OnFormatChange(month, format);
 typedef OnSelectedDateChange(date);
 
 class ADBSCalendar extends StatefulWidget {
   final List<DateTime> events, holidays;
   final OnPreviousMonth onPreviousMonth;
   final OnNextMonth onNextMonth;
+  final OnFormatChange onFormatChange;
   final OnSelectedDateChange onSelectedDateChange;
   final bool enableFormatSwitcher;
   final Format format;
@@ -25,6 +27,7 @@ class ADBSCalendar extends StatefulWidget {
     this.format = Format.AD,
     this.enableFormatSwitcher = true,
     this.onSelectedDateChange,
+    this.onFormatChange,
     this.onPreviousMonth,
     this.onNextMonth,
   });
@@ -246,6 +249,10 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                               setState(() {
                                 format = f;
                               });
+                              int month = format == Format.AD
+                                  ? _focusedDate.month
+                                  : nt.month;
+                              widget.onFormatChange(month, format);
                             },
                           ),
                         ),

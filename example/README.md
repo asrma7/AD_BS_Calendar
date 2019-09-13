@@ -24,6 +24,9 @@ ADBSCalendar(
     onPreviousMonth: (month, format) {
         print("$month");
     },
+    onFormatChange: (month, format) {
+        print(format);
+    },
     onNextMonth: (month, format) {
         print("$month");
     },

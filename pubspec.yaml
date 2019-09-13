@@ -1,6 +1,6 @@
 name: ad_bs_calendar
 description: A Plugin to build calendar widget that supports the date format in both AD and BS.
-version: 1.0.4
+version: 1.0.5
 author: Ashutosh Sharma <asrma.sharma@gmail.com>
 homepage: https://github.com/asrma7/AD_BS_Calendar
 
