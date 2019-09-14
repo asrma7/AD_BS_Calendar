@@ -1,6 +1,6 @@
 # AD BS Calendar
 
-[![Pub Package](https://img.shields.io/badge/pub-v1.0.5-green.svg)](https://pub.dev/packages/ad_bs_calendar)
+[![Pub Package](https://img.shields.io/badge/pub-v1.0.6-green.svg)](https://pub.dev/packages/ad_bs_calendar)
 [![Licence](https://img.shields.io/badge/Licence-MIT-orange.svg)](https://github.com/asrma7/AD_BS_Calendar/blob/master/LICENSE)
 
 A Plugin to build calendar widget that supports the date format in both AD and BS.

@@ -19,13 +19,14 @@ class ADBSCalendar extends StatefulWidget {
   final OnNextMonth onNextMonth;
   final OnFormatChange onFormatChange;
   final OnSelectedDateChange onSelectedDateChange;
-  final bool enableFormatSwitcher;
+  final bool enableFormatSwitcher, nepaliDigits;
   final Format format;
   ADBSCalendar({
     this.events = const [],
     this.holidays = const [],
     this.format = Format.AD,
     this.enableFormatSwitcher = true,
+    this.nepaliDigits = false,
     this.onSelectedDateChange,
     this.onFormatChange,
     this.onPreviousMonth,
@@ -43,54 +44,35 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
   DateTime _selectedDate = DateTime.now();
   int _pageId = 0;
   double _dx = 0;
+  List _nepaliWeek = ["आइत", "सोम", "मंगल", "बुध", "बिही", "शुक्र", "शनि"];
+  List _englishWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   Widget _buildtable() {
     int x = 0;
     final children = <TableRow>[
       TableRow(
-        children: [
-          Center(
-            child: Text(
-              "Sun",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Mon",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Tue",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Wed",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Thu",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Fri",
-              style: TextStyle(color: const Color(0xFF616161)),
-            ),
-          ),
-          Center(
-            child: Text(
-              "Sat",
-              style: TextStyle(color: const Color(0xFFF44336)),
-            ),
-          ),
-        ],
+        children: format == Format.BS && widget.nepaliDigits
+            ? _nepaliWeek
+                .map(
+                  (f) => Center(
+                    child: Text(
+                      f,
+                      style: TextStyle(
+                          color: const Color(0xFF616161), fontSize: 18.0),
+                    ),
+                  ),
+                )
+                .toList()
+            : _englishWeek
+                .map(
+                  (f) => Center(
+                    child: Text(
+                      f,
+                      style: TextStyle(
+                          color: const Color(0xFF616161), fontSize: 16.0),
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     ];
     while (x < _visibleDays.length) {
@@ -168,16 +150,22 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                 Center(
                   child: Text(
                     format == Format.BS
-                        ? NepaliDateFormat('d').format(nepalidate)
+                        ? widget.nepaliDigits
+                            ? NepaliDateFormat.d(Language.NEPALI)
+                                .format(nepalidate)
+                            : NepaliDateFormat.d(Language.ENGLISH)
+                                .format(nepalidate)
                         : DateFormat('d').format(date),
                     style: TextStyle(
-                        color: DateFormat('E').format(date) == "Sat" ||
-                                widget.holidays.contains(date)
-                            ? const Color(0xFFF44336)
-                            : (Utils.isSameDay(date, _selectedDate) ||
-                                    Utils.isSameDay(date, DateTime.now()))
-                                ? Colors.white
-                                : const Color(0xFF616161)),
+                      color: DateFormat('E').format(date) == "Sat" ||
+                              widget.holidays.contains(date)
+                          ? const Color(0xFFF44336)
+                          : (Utils.isSameDay(date, _selectedDate) ||
+                                  Utils.isSameDay(date, DateTime.now()))
+                              ? Colors.white
+                              : const Color(0xFF616161),
+                      fontSize: 15.0,
+                    ),
                   ),
                 ),
                 Align(
@@ -234,10 +222,10 @@ class _ADBSCalendarState extends State<ADBSCalendar> {
                 Text(
                   format == Format.AD
                       ? DateFormat.yMMMM('en_US').format(_focusedDate)
-                      : indexToMonth(nt.month, Language.ENGLISH) +
-                          " " +
-                          nt.year.toString(),
-                  style: TextStyle(fontSize: 17.0),
+                      : widget.nepaliDigits
+                          ? NepaliDateFormat.yMMMM(Language.NEPALI).format(nt)
+                          : NepaliDateFormat.yMMMM(Language.ENGLISH).format(nt),
+                  style: TextStyle(fontSize: 18.0),
                   textAlign: TextAlign.start,
                 ),
                 widget.enableFormatSwitcher

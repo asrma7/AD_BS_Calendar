@@ -1,3 +1,3 @@
-## [1.0.5] - September 2019
+## [1.0.6] - September 2019
 
-- Added Functionality for onFormatChange
+- Added Support for nepali language

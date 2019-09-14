@@ -21,6 +21,7 @@ ADBSCalendar(
     ],
     format: format,
     enableFormatSwitcher: true,
+    nepaliDigits: true,
     onPreviousMonth: (month, format) {
         print("$month");
     },
